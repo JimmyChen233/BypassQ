@@ -15,7 +15,8 @@ pipeline {
         AWS_ACCESS_KEY     = credentials('AWS_ACCESS_KEY')
         AWS_SECRET_KEY     = credentials('AWS_SECRET_KEY')
         AWS_S3_BUCKET     = credentials('AWS_S3_BUCKET')
-
+        ECS_SERVICE = "bypassq-prod-service"
+        ECS_CLUSTER = "bypassq-prod-cluster"
 
     }   
 
@@ -42,22 +43,37 @@ pipeline {
             }
         }
 
-        // Uploading Docker images into AWS ECR
-        stage('Pushing to ECR') {
+        // Uploading Docker images into AWS ECR and update ECS
+        stage('Deploying') {
             when {
 					equals expected: true, actual: params.build
 			}
             steps{  
                 script {
-                    echo "Build completed"
-                    echo "Pushing the Docker image"
-                    sh "docker push $REPOSITORY_URI:$COMMIT_HASH"
-                    // echo "Writing image definition files"
-                    // sh "printf '[{"name":"bypassq-task","imageUri":"%s"}]' $REPOSITORY_URI:$COMMIT_HASH > imagedefinitions.json"
-                    // sh "cat imagedefinitions.json"
+                    withAWS(credentials: 'jimmy-jenkins-credential') {
+                        sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+                        echo "Build completed"
+                        echo "Pushing the Docker image"
+                        sh "docker push $REPOSITORY_URI:$COMMIT_HASH"
+                        echo "Pushed successfully"
+                    }
+                    try {
+                        withAWS(region: "ap-southeast-2", credentials: 'jimmy-jenkins-credential') {
+                            def updateService = "aws ecs update-service --service $ECS_SERVICE --cluster $ECS_CLUSTER --force-new-deployment"
+                            def runUpdateService = sh(returnStdout: true, script: updateService)
+                            def serviceStable = "aws ecs wait services-stable --service $ECS_SERVICE --cluster $ECS_CLUSTER"
+                            sh(returnStdout: true, script: serviceStable)
+                            // put all your slack messaging here
+                        }
+                    }   catch(Exception e) {
+                        echo e.message.toString()
+                    }
+
                 }
             }
         }
+
+        stage
 
 
     }
