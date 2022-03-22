@@ -1,0 +1,33 @@
+//em parent
+//rem root
+//default is 16px   16*62.5 = 10px so 1 rem == 10px
+@import url('https://fonts.googleapis.com/css2?family=Dongle:wght@300&family=Roboto:wght@700&display=swap');
+html {
+  font-size: 13px;
+  font-family: 'Dongle', sans-serif;
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+}

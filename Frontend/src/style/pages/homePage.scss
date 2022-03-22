@@ -1,0 +1,156 @@
+@import '../color';
+
+.homepage {
+  position: relative;
+
+  a {
+    color: white;
+  }
+
+  &__wrapper {
+    box-sizing: border-box;
+    padding: 0 80px;
+
+    max-height: 100vh;
+    background-color: #ecd6c4;
+    position: relative;
+  }
+
+  &__header {
+    display: flex;
+    color: #565969;
+    padding: 30px 0;
+    font-size: 1.2rem;
+    justify-content: space-between;
+  }
+
+  &__options {
+    display: flex;
+    margin-right: 60px;
+
+    li {
+      cursor: pointer;
+      margin-left: 30px;
+    }
+  }
+
+  &__menubtn {
+    background-color: #f29d58;
+    color: white;
+    margin-top: 50px;
+    padding: 15px 30px;
+  }
+
+  &__section {
+    margin-top: 7%;
+    height: 50vh;
+
+    h5 {
+      color: #ec8c6d;
+      font-size: 2.5rem;
+      letter-spacing: 0.1rem;
+      font-family: cursive;
+      z-index: 2;
+    }
+
+    h2 {
+      z-index: 2;
+      margin-top: 20px;
+      color: #324262;
+      font-size: 5rem;
+      max-width: 700px;
+      letter-spacing: 0.2rem;
+    }
+  }
+
+  &__Icon {
+    position: absolute;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    &--noodleIcon {
+      right: 10%;
+      width: 450px;
+      height: 450px;
+      bottom: -25%;
+      animation: rotate 3s ease-in-out infinite;
+    }
+
+    &--chopIcon {
+      width: 350px;
+      height: 350px;
+      right: 25%;
+      top: 20%;
+      z-index: 0;
+      animation: rotate 3s ease-in-out infinite;
+    }
+
+    &--bearIcon {
+      left: 40%;
+      bottom: 23%;
+    }
+
+    &--clockIcon {
+      top: 8%;
+      right: 10%;
+    }
+  }
+
+  &__footer {
+    width: 100%;
+    background-color: #f2e2cf;
+    max-height: 251px;
+    height: 251px;
+    display: flex;
+    align-items: center;
+
+    ul {
+      margin-left: 40px;
+      display: flex;
+      line-height: 50px;
+
+      li {
+        display: flex;
+        justify-content: center;
+
+        svg {
+          margin-top: 10px;
+          width: 30px;
+          height: 30px;
+        }
+      }
+    }
+  }
+
+  &__foot-text {
+    font-size: 1.5rem;
+    color: #565969;
+    margin-right: 30px;
+  }
+
+  &__foot--icon {
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    background-color: white;
+    border-radius: 50%;
+    margin-right: 20px;
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0);
+  }
+
+  50% {
+    transform: rotate(-20deg);
+  }
+
+  0% {
+    transform: rotate(0deg);
+  }
+}

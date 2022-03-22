@@ -1,0 +1,35 @@
+@import '../color';
+@import '../minxin';
+
+.payment-success {
+  @include payment-flex(row, center);
+  width: 100%;
+  min-height: 100vh;
+  background: $background-shadow;
+
+  &__container {
+    @include payment-flex(column, space-evenly);
+    width: 293px;
+    height: 148px;
+    background: $payment-container;
+    border: 1px solid $border;
+    box-sizing: border-box;
+    border-radius: 8px;
+
+    &__title {
+      @include payment-font(500, 20px);
+      color: $white;
+    }
+
+    &__back {
+      @include payment-font(600, 14px);
+      width: 125px;
+      height: 27px;
+      color: $white;
+      background-color: $orange;
+      text-decoration: none;
+      text-align: center;
+      border-radius: 8px;
+    }
+  }
+}

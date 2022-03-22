@@ -1,0 +1,74 @@
+@import '../color';
+@import '../minxin';
+@import '../zIndex';
+
+.home-background {
+  // position: absolute;
+  // right: -10%;
+  // width: 100%;
+
+  &__ellipse {
+    @include home-background(50%, 0);
+    position: relative;
+    width: 1176px;
+    height: 1176px;
+    top: -679px;
+    left: 287px;
+    background: $primary-background;
+    z-index: $ellipse;
+  }
+
+  &__dish {
+    @include home-background(50%, 0);
+    position: absolute;
+    width: 266px;
+    height: 266px;
+    top: 338px;
+    left: 740px;
+  }
+
+  &__breakfast {
+    @include home-background(50%, rotate(37.48deg));
+    position: absolute;
+    width: 96px;
+    height: 96px;
+    top: 333px;
+    left: 520px;
+  }
+
+  &__brunch {
+    @include home-background(50%, rotate(37.48deg));
+    position: absolute;
+    width: 96px;
+    height: 96px;
+    top: 181px;
+    left: 649px;
+  }
+
+  &__lunch {
+    @include home-background(50%, rotate(37.48deg));
+    position: absolute;
+    width: 96px;
+    height: 96px;
+    top: 116px;
+    left: 842px;
+  }
+
+  &__dinner {
+    @include home-background(50%, rotate(37.48deg));
+    position: absolute;
+    width: 96px;
+    height: 96px;
+    top: 181px;
+    left: 1027px;
+  }
+
+  &__snack {
+    @include home-background(50%, rotate(37.48deg));
+    position: absolute;
+    width: 96px;
+    height: 96px;
+    top: 331px;
+    left: 1134px;
+  }
+}

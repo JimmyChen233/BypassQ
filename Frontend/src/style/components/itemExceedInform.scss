@@ -1,0 +1,19 @@
+@import '../color';
+@import '../minxin';
+
+.inform {
+  @include font-content();
+  position: absolute;
+  width: 448px;
+  height: 117px;
+  left: 382px;
+  top: 269px;
+  background: #201f26;
+  border-radius: 44px;
+  color: $white;
+
+  p {
+    margin: 30px 0 0 50px;
+    line-height: 180%;
+  }
+}

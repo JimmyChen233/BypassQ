@@ -1,0 +1,15 @@
+@import '../color';
+
+.userPage {
+  min-height: 80vh;
+  width: 80%;
+  margin-top: 100px;
+  background-color: $secondary-background;
+
+  &-id {
+    color: $primary-text;
+    font-size: 20px;
+    padding-left: 70px;
+    padding-top: 80px;
+  }
+}

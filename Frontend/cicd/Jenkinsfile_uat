@@ -1,0 +1,103 @@
+pipeline {
+	// agent any
+    agent {
+		docker {
+			image 'node:12.13.0'
+			args '-u root:root'
+		}
+	}
+	parameters {
+		// choice(name: 'workspace', choices:['test', 'uat', 'prod'], description: 'Workspace/environment file to use for deployment')
+		booleanParam(name: 'build', defaultValue: false, description: 'Run npm build?')
+		booleanParam(name: 'deploy', defaultValue: false, description: 'Deploy to s3?')
+	}
+    // tools {nodejs "nodejs"}
+    
+    environment {
+		CI = 'true'
+		JR_ENVIRONMENT = 'UAT'
+		BUCKET_NAME = 's3://bypassj2.link'
+		WORKSPACE_PATH = '/bitnami/jenkins/home/workspace/bypassq-frontend-uat/build'
+		// WORKSPACE_PATH = '/bitnami/jenkins/home/workspace/bypassq-frontend-uat/build'
+		REGION = 'ap-southeast-2'
+		AWS_CREDENTIAL = 'jimmy-jenkins-credential'
+	}
+
+	options {
+		// Keep maximum 10 archievd artifacts
+		buildDiscarder(logRotator(numToKeepStr:'10', artifactNumToKeepStr:'10'))
+		// No simultaneous builds
+		disableConcurrentBuilds()
+		durabilityHint('MAX_SURVIVABILITY') // PERFORMANCE_OPTIMIZED or SURVIVABLE_NONATOMIC
+	}
+
+	stages {
+		stage('Install packages') {
+			when {
+					equals expected: true, actual: params.build
+			}
+			steps {
+				echo "Installing packages ..."
+				sh 'npm install'
+			}
+		}
+		stage('Build') {
+			when {
+					equals expected: true, actual: params.build
+			}
+			steps {
+				echo "Building ..."
+				sh 'npm run build'
+			}
+		}
+		stage('Install AWS CLI') {
+			when {
+					equals expected: true, actual: params.deploy
+			}
+			steps {
+				echo "Installing AWS CLI ..."
+				// Insall awscli in Jenkins contianer
+				sh 'apt-get update'
+				sh 'apt install python3-pip -y'
+				sh 'pip3 install awscli --upgrade'
+			}
+		}
+		stage('Deploy to UAT') {
+			when {
+					equals expected: true, actual: params.deploy
+			}
+			// when {
+			// 	expression {
+			// 		currentBuild.result == null || currentBuild.result == 'SUCCESS'
+			// 	}
+			// }
+			steps {
+				deployToS3(JR_ENVIRONMENT)
+			}
+		}
+	}
+
+    post {
+        // Clean after build
+        always {
+            cleanWs(cleanWhenNotBuilt: false,
+                    deleteDirs: true,
+                    disableDeferredWipeout: true,
+                    notFailBuild: true,
+                    patterns: [[pattern: '.gitignore', type: 'INCLUDE'],
+                               [pattern: '.propsfile', type: 'EXCLUDE']])
+        }
+    }
+
+}
+
+
+def deployToS3(environment) {
+	echo 'Deploying to ' + environment + ' ...'
+	withAWS(credentials: "${AWS_CREDENTIAL}", region: "${REGION}") {
+		// Empty the UAT bucket
+		sh 'aws s3 rm "${BUCKET_NAME}" --recursive' // ${BUCKET_NAME} is also fine.
+		// Copy the static files from workspace to the S3 bucket created before
+		sh 'aws s3 cp "${WORKSPACE_PATH}" "${BUCKET_NAME}" --recursive'
+	}
+}

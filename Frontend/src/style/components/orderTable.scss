@@ -1,0 +1,43 @@
+@import '../color';
+
+.order-table {
+  &__orders-table {
+    text-align: center;
+  }
+
+  &__orders-table th,
+  &__orders-table td {
+    // padding: 20px 80px;
+    color: $white;
+    font-size: 15px;
+  }
+
+  &__orders-table th {
+    border-bottom: 1pt solid $divider;
+  }
+
+  &__orders-table-td {
+    position: relative;
+  }
+
+  &__orders-table-order-id {
+    padding: 20px 70px;
+  }
+
+  &__orders-table-payment {
+    padding: 20px 120px;
+  }
+
+  &__orders-table-complete-button {
+    padding: 20px 60px;
+  }
+
+  &__orders-table-button {
+    border: none;
+    outline: none;
+    background-color: $dark-green;
+    color: $light-green;
+    border-radius: 10px;
+    padding: 2px 25px;
+  }
+}

@@ -1,0 +1,72 @@
+@import '../color';
+
+.user-page {
+  min-height: 100vh;
+  background-color: $primary-background;
+  display: flex;
+
+  &__nav-wrapper {
+    background-color: $wrapper-background;
+    height: 100vh;
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  &__navbar {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  &__item {
+    border-radius: 12px;
+    text-align: center;
+    height: 56px;
+    width: 56px;
+    margin: 26px auto;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &--actived {
+      background-color: $toggled-background;
+    }
+
+    &-icon {
+      width: 25px;
+      height: 25px;
+
+      svg {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+
+  &__logout {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-image: url('../../assets/logout.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 30px;
+    padding-bottom: 30px;
+  }
+
+  &__section {
+    background-color: $primary-background;
+    min-height: 600px;
+    width: 100%;
+    margin-left: 140px;
+  }
+}

@@ -1,0 +1,49 @@
+@import '../color';
+@import '../minxin';
+
+.home-content {
+  position: absolute;
+  margin: 296px 100px;
+
+  &__title {
+    @include home-font(normal, 600, 48px, 72px);
+    color: $home-header;
+  }
+
+  &__slogan {
+    @include home-font(normal, 500, 36px, 54px);
+    color: $black;
+  }
+
+  &__description {
+    @include home-font(normal, 400, 14px, 21px);
+    color: $home-text;
+  }
+
+  &__bottom {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    &__slogan {
+      @include home-font(italic, 500, 28px, 42px);
+      color: $black;
+      margin-top: 46px;
+    }
+
+    &__order {
+      @include home-font(normal, 700, 12px, 18px);
+      color: $white;
+      background-color: $primary-background;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 199px;
+      height: 41px;
+      margin-top: 10px;
+      border-radius: 48px;
+      text-decoration: none;
+    }
+  }
+}

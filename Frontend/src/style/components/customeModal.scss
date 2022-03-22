@@ -1,0 +1,21 @@
+@import '../color';
+
+.modal {
+  position: absolute;
+  height: 300px;
+  width: 500px;
+  border-radius: 25px;
+  background-color: $dish-modal;
+  outline: none;
+  padding: 30px;
+  overflow: hidden;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: $overlay-background;
+}

@@ -1,0 +1,27 @@
+image: atlassian/default-image:2
+
+pipelines:
+  custom:
+    azure:
+      - step:
+          name: "Build"
+          script:
+            - nvm install 12
+            - npm install
+            - npm run build
+            - cd build
+            - zip -r ../bypassq-$BITBUCKET_BUILD_NUMBER.zip .
+          artifacts: 
+            - bypassq-*.zip
+      - step:
+          name: "Deploy to Azure"
+          deployment: azure
+          script:
+            - pipe: microsoft/azure-web-apps-deploy:1.0.0
+              variables:
+                AZURE_APP_ID: $AZURE_APP_ID
+                AZURE_PASSWORD: $AZURE_PASSWORD
+                AZURE_TENANT_ID: $AZURE_TENANT_ID
+                AZURE_RESOURCE_GROUP: $RESOURCE_GROUP
+                AZURE_APP_NAME: $APP_NAME
+                ZIP_FILE: 'bypassq-$BITBUCKET_BUILD_NUMBER.zip'

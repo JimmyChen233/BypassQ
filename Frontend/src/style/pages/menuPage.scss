@@ -1,0 +1,85 @@
+@import '../color';
+
+.menu-page {
+  background-color: #f9f9fb;
+  min-height: 100vh;
+  padding: 0 100px;
+}
+
+.dish-modal {
+  .Modal {
+    &--dish-modal {
+      top: 50%;
+      left: 50%;
+      right: auto;
+      bottom: auto;
+      margin-right: -50%;
+      transform: translate(-50%, -50%);
+      width: 350px;
+      background-color: white;
+      box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+        rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+
+      .dish-wrapper {
+        &__img {
+          height: 180px;
+          width: 180px;
+          margin: 0 auto;
+          border-radius: 50%;
+          overflow: hidden;
+          box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px,
+            rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+
+          img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+          }
+        }
+
+        &__action {
+          display: flex;
+          justify-content: center;
+          margin-top: 40px;
+        }
+
+        &__modify {
+          display: flex;
+          margin-right: 20px;
+        }
+
+        &__btn {
+          background-color: #fb9400;
+          color: $white;
+          border-radius: 8px;
+          box-shadow: $box-shadow;
+          outline: 0;
+          border: 0;
+          text-align: center;
+          height: 53px;
+          cursor: pointer;
+
+          &--increase,
+          &--decrease {
+            width: 20px;
+          }
+
+          &--decrease__disabled {
+            opacity: 0.4;
+          }
+
+          &--add {
+            padding: 0 30px;
+          }
+        }
+
+        &__quantity {
+          color: black;
+          font-size: 1.2rem;
+          padding: 0 21px;
+          line-height: 50px;
+        }
+      }
+    }
+  }
+}
