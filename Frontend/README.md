@@ -109,4 +109,13 @@ Your new certificate might continue to display a status of Pending validation fo
 
 After the verification is successful, you will see that the status of your certificate becomes Issued, and there are 3 more records in the Hosted Zone of Route 53.
 
+# Ste 6： Create a distribution in CloudFront
+
+![image](https://user-images.githubusercontent.com/57895489/159743862-e1904488-b3a0-4521-b720-55673e50c0d9.png)
+![image](https://user-images.githubusercontent.com/57895489/159743954-9888eee8-936e-4d64-8f3c-b5c92bc399b4.png)
+![image](https://user-images.githubusercontent.com/57895489/159744008-92066457-7514-4ca5-bae5-4c7a5e18f472.png)
+![image](https://user-images.githubusercontent.com/57895489/159744054-d61fb3b9-9790-4cd8-a48f-69ff01f865d0.png)
+![image](https://user-images.githubusercontent.com/57895489/159744073-7d8ac579-560b-49e3-ad0e-38303e98b187.png)
+
+
 
