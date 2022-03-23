@@ -109,7 +109,7 @@ Your new certificate might continue to display a status of Pending validation fo
 
 After the verification is successful, you will see that the status of your certificate becomes Issued, and there are 3 more records in the Hosted Zone of Route 53.
 
-# Ste 6： Create a distribution in CloudFront
+# Step 6： Create a distribution in CloudFront
 
 ![image](https://user-images.githubusercontent.com/57895489/159743862-e1904488-b3a0-4521-b720-55673e50c0d9.png)
 ![image](https://user-images.githubusercontent.com/57895489/159743954-9888eee8-936e-4d64-8f3c-b5c92bc399b4.png)
@@ -118,4 +118,39 @@ After the verification is successful, you will see that the status of your certi
 ![image](https://user-images.githubusercontent.com/57895489/159744073-7d8ac579-560b-49e3-ad0e-38303e98b187.png)
 
 
+# Step 7: Update records in Route 53
+
+Under Records, select the type A record of your domain and subdomain.
+
+Domain: bypassq.link
+![image](https://user-images.githubusercontent.com/57895489/159744323-2bbfd7c6-a0d5-41f6-9fad-b167c1f46720.png)
+
+Subdomain: www.bypassq.link
+![image](https://user-images.githubusercontent.com/57895489/159744388-c70a8f24-ca48-4125-bf99-d234c14a3c0b.png)
+
+# Step 8: Confirm the S3 bucket policy
+
+Substitute YOUR_DOMAIN_BUCKET and YOUR_OAI
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "1",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity YOUR_OAI"
+            },
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::YOUR_DOMAIN_BUCKET/*"
+        }
+    ]
+}
+```
+
+# References:
+
+1. https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-custom-domain-walkthrough.html#website-hosting-custom-domain-walkthrough-domain-registry
+2. https://docs.aws.amazon.com/acm/latest/userguide/dns-validation.html
+3. https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-cloudfront-walkthrough.html
 
