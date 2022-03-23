@@ -8,4 +8,6 @@
 
 **Back-end: Bitbucket + Jenkins pipeline + ECR + ECS Fargate + Application Load Balancer + Nat Gateway**
 
-![image](https://user-images.githubusercontent.com/57895489/159639100-b7e04f20-d2a0-4859-8d9f-6b604dc71978.png)
+![Backend](https://user-images.githubusercontent.com/57895489/159706634-5de3929c-dbf9-4af4-baad-fdaeb1a9b030.png)
+
+
