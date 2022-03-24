@@ -1,6 +1,6 @@
-# AWS_Cloudformation_FrontEnd
+# AWS_Cloudformation
 
-_IaC for React app Front End_
+_IaC for React app Front-end_
 
 **Prerequisite**
 
@@ -69,4 +69,6 @@ https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed
 
 #Step 5: Update records in Route 53
 
-To be continued ...
+```aws cloudformation update-stack --stack-name r53 --template-body file://$PWD/r53.yml ```
+
+
