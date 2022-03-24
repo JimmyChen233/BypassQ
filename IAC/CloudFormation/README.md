@@ -69,6 +69,6 @@ https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed
 
 #Step 5: Update records in Route 53
 
-```aws cloudformation update-stack --stack-name r53 --template-body file://$PWD/r53.yml ```
+```aws cloudformation update-stack --stack-name r53 --template-body file://$PWD/r53_update.yml ```
 
 
