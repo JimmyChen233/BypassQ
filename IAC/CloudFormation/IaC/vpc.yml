@@ -1,0 +1,139 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: VPC for bypassq
+
+Resources:
+  bypassqVpc:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: '10.0.0.0/16'
+      InstanceTenancy: default
+
+  bypassqVpcPublic01:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref bypassqVpc
+      AvailabilityZone: !Select [0, !GetAZs '']
+      CidrBlock: !Sub '10.0.1.0/24'
+
+  bypassqVpcPublic02:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref bypassqVpc
+      AvailabilityZone: !Select [1, !GetAZs '']
+      CidrBlock: !Sub '10.0.2.0/24'
+
+  bypassqVpcPrivate01:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref bypassqVpc
+      AvailabilityZone: !Select [0, !GetAZs '']
+      CidrBlock: !Sub '10.0.3.0/24'
+
+  bypassqVpcPrivate02:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref bypassqVpc
+      AvailabilityZone: !Select [1, !GetAZs '']
+      CidrBlock: !Sub '10.0.4.0/24'
+
+  bypassqVpcIgw:
+    Type: AWS::EC2::InternetGateway
+
+  NatGatewayEIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: VPC
+
+  NatGateway:
+    Type: AWS::EC2::NatGateway
+    Properties: 
+      AllocationId: !GetAtt NatGatewayEIP.AllocationId
+      ConnectivityType: public
+      SubnetId: !Ref bypassqVpcPublic01 
+
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref bypassqVpc
+      InternetGatewayId: !Ref bypassqVpcIgw
+
+  bypassqVpcPublicRt:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref bypassqVpc
+
+  RouteTableAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref bypassqVpcPublic01
+      RouteTableId: !Ref bypassqVpcPublicRt
+
+  RouteTableAssociation2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref bypassqVpcPublic02
+      RouteTableId: !Ref bypassqVpcPublicRt
+
+  InternetRoute:
+    Type: 'AWS::EC2::Route'
+    DependsOn: AttachGateway
+    Properties:
+      GatewayId: !Ref bypassqVpcIgw
+      RouteTableId: !Ref bypassqVpcPublicRt
+      DestinationCidrBlock: '0.0.0.0/0'
+
+  bypassqVpcPrivateRt:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref bypassqVpc
+
+  RouteTableAssociation3:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref bypassqVpcPrivate01
+      RouteTableId: !Ref bypassqVpcPrivateRt
+
+  RouteTableAssociation4:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref bypassqVpcPrivate02
+      RouteTableId: !Ref bypassqVpcPrivateRt
+
+  PrivateRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NatGateway
+      RouteTableId: !Ref bypassqVpcPrivateRt
+Outputs:
+  bypassqVpc:
+    Description: bypassqVpc
+    Value: !Ref bypassqVpc
+    Export:
+      Name: 'bypassqVpc'
+
+  bypassqVpcPublic01:
+    Description: 'Public subnet on AZ1'
+    Value: !Ref bypassqVpcPublic01
+    Export: 
+      Name: 'bypassqVpcPublic01'
+  
+  bypassqVpcPublic02:
+    Description: 'Public subnet on AZ2'
+    Value: !Ref bypassqVpcPublic02
+    Export: 
+      Name: bypassqVpcPublic02
+
+  bypassqVpcPrivate01:
+    Description: 'Private subnet on AZ1'
+    Value: !Ref bypassqVpcPrivate01
+    Export: 
+      Name: 'bypassqVpcPrivate01'
+  
+  bypassqVpcPrivate02:
+    Description: 'Private subnet on AZ2'
+    Value: !Ref bypassqVpcPrivate02
+    Export: 
+      Name: 'bypassqVpcPrivate02'
+  
+  

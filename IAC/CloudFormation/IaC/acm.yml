@@ -1,0 +1,55 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: ACM for bypassq
+
+Parameters:
+  owner:
+    Type: String 
+    Default: Jimmy
+  ownerEmail:
+    Type: String
+    Default: aszln5766@gmail.com
+  environment:
+    Type: String
+    Default: development
+    AllowedValues: 
+      - development
+      - production
+      - test
+  DomainName:
+    Type: String
+    Default: bypassj2.link
+  HostedZoneId:
+    Type: String
+    Default: Z0920076Q4KNIGKXS1MI
+
+Resources:
+  Certificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Ref DomainName
+      SubjectAlternativeNames:
+        - !Join ['.', ['www', !Ref DomainName]]
+        - !Join ['.', ['alb', !Ref DomainName]]
+      DomainValidationOptions:
+        - DomainName: !Ref DomainName
+          HostedZoneId: !Ref HostedZoneId
+        - DomainName: !Join ['.', ['www', !Ref DomainName]]
+          HostedZoneId: !Ref HostedZoneId
+        - DomainName: !Join ['.', ['alb', !Ref DomainName]]
+          HostedZoneId: !Ref HostedZoneId
+      ValidationMethod: DNS
+      Tags:
+        - Key: owner
+          Value: !Ref owner  
+        - Key: ownerEmail
+          Value: !Ref ownerEmail
+        - Key: environment
+          Value: !Ref environment
+
+
+Outputs:
+  Certificate:
+    Description: Certificate for domains
+    Value: !Ref Certificate
+    Export:
+      Name: Certificate

@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Create hosted zone and records for jimmydevops.link
+
+Parameters:
+  DomainName:
+    Type: String
+    Default: bypassj2.link
+  HostedZoneId:
+    Type: String
+    Default: Z0920076Q4KNIGKXS1MI
+    
+
+Resources:
+
+  myDNSRecord1:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      AliasTarget: 
+        DNSName: s3-website-ap-southeast-2.amazonaws.com
+        HostedZoneId: Z1WCIGYICN2BYD
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Ref DomainName
+      Type: A
+
+  myDNSRecord2:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      AliasTarget: 
+        DNSName: s3-website-ap-southeast-2.amazonaws.com
+        HostedZoneId : Z1WCIGYICN2BYD
+      HostedZoneId : !Ref HostedZoneId
+      Name: !Join ['', ['www.', !Ref DomainName]]
+      Type: A
+
+  myDNSRecord3:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      AliasTarget: 
+        DNSName: !Join ['.',['dualstack', !ImportValue bypassqAlbDNS]]
+        #HostedZoneId: !ImportValue bypassqAlbHostedZoneId
+        HostedZoneId: Z1GM3OXH4ZPM65
+      HostedZoneId : !Ref HostedZoneId
+      Name: !Join ['', ['alb.', !Ref DomainName]]
+      Type: A
+
+
+

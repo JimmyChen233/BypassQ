@@ -1,0 +1,24 @@
+variables:
+  owner: 'Jimmy'
+  ownerEmail: 'aszln5766@gmail.com'
+  project: 'bypassj2/front-end'
+
+
+stages:
+  - validation
+  - deploy-acm
+
+# Validation
+acm-validate:
+  stage: validate
+  script:
+    - aws cloudformation validate-template ---template-body file://acm.yml
+
+# Deploy
+acm-deploy:
+  stages: deploy-acm
+  variables:
+    stackName: acm
+  script:
+    - aws cloudformation deploy --template-file ./acm.yml --stack-name $stackName
+      -- no 

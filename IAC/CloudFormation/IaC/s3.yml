@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: S3 bucket for bypassq
+
+Parameters:
+  DomainName:
+    Type: String
+    Default: bypassj2.link
+  
+  owner:
+    Type: String 
+    Default: Jimmy
+  ownerEmail:
+    Type: String
+    Default: aszln5766@gmail.com
+  environment:
+    Type: String
+    Default: development
+    AllowedValues: 
+      - development
+      - production
+      - test
+
+Resources:
+
+  S3BucketDomain:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref DomainName
+      AccessControl: Private
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls : true
+        BlockPublicPolicy : true
+        IgnorePublicAcls : true
+        RestrictPublicBuckets : true
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+      Tags:
+        - Key: owner
+          Value: !Ref owner
+        - Key: ownerEmail
+          Value: !Ref ownerEmail
+        - Key: environment
+          Value: !Ref environment
+      CorsConfiguration:
+        CorsRules:
+          - AllowedMethods:
+              - GET
+            AllowedOrigins:
+              - '*'
+            Id: myCORSRuleId1
+            MaxAge: 3600
+    #DeletionPolicy: Retain
+  S3BucketSubdomain:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Join ['.',['www',!Ref DomainName]]
+      AccessControl: Private
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls : true
+        BlockPublicPolicy : true
+        IgnorePublicAcls : true
+        RestrictPublicBuckets : true
+      WebsiteConfiguration:
+        RedirectAllRequestsTo:
+          HostName: !Ref DomainName
+          Protocol: http
+      Tags:
+        - Key: owner
+          Value: !Ref owner
+        - Key: ownerEmail
+          Value: !Ref ownerEmail
+        - Key: environment
+          Value: !Ref environment
+      
+    #DeletionPolicy: Retain
+

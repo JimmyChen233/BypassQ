@@ -1,0 +1,14 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: specify ECR
+
+Resources:
+  MyRepository: 
+    Type: AWS::ECR::Repository
+    Properties: 
+      RepositoryName: 'bypassq-apis-uat'
+      ImageScanningConfiguration: 
+        ScanOnPush: true
+        
+Outputs:    
+  RepositoryUri:
+    Value: !GetAtt MyRepository.RepositoryUri

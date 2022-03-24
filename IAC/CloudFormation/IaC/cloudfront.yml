@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Create a distribution in cloudfront for jimmydevops.link
+
+Parameters:
+  DomainName:
+    Type: String
+    Default: bypassj2.link
+
+Resources:
+
+  oaiUser:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: 'OAI user for bypass s3 website'
+
+  cloudfrontdistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Comment: cloudfront distribution for bypassj2
+        DefaultCacheBehavior:
+          Compress: true
+          TargetOriginId: bypassj2
+          ViewerProtocolPolicy: allow-all
+          AllowedMethods: 
+            - GET
+            - HEAD
+          CachePolicyId:  658327ea-f89d-4fab-a63d-7e88639e58f6
+        Enabled: true
+        Origins:
+          - DomainName: !Join ['.',[!Ref DomainName, 's3.ap-southeast-2.amazonaws.com']]
+            Id: bypassj2
+            S3OriginConfig:
+              OriginAccessIdentity:  !Join ['', ['origin-access-identity/cloudfront/', !Ref oaiUser]] 
+        PriceClass: PriceClass_All
+        Aliases: 
+          - !Ref DomainName
+          - !Join ['.',['www',!Ref DomainName]]
+        ViewerCertificate:
+          AcmCertificateArn: arn:aws:acm:us-east-1:325660384969:certificate/d6c3d800-0b51-448b-9901-6ba1036828e0
+          MinimumProtocolVersion: TLSv1.2_2021
+          SslSupportMethod: sni-only
+
+        CustomErrorResponses: 
+          - ErrorCachingMinTTL: 0
+            ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /index.html

@@ -1,0 +1,88 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Containers on ECS Cluster
+
+Resources:
+  
+  bypassqTask:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: bypassqTask
+      Cpu: 512
+      Memory: 1024
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      ExecutionRoleArn: !ImportValue ECSTaskExecutionRole
+      ContainerDefinitions:
+        - Name: bypassqTask
+          Image: 765327795183.dkr.ecr.ap-southeast-2.amazonaws.com/bypassq:latest
+          PortMappings:
+            - ContainerPort: 8081
+              Protocol: tcp
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: bypassqTask
+              awslogs-region: ap-southeast-2
+              awslogs-create-group: true
+              awslogs-stream-prefix: 'bypassq'
+
+  bypassqService:
+    Type: AWS::ECS::Service
+    DependsOn: bypassqServiceListenerRule
+    Properties:
+      TaskDefinition: !Ref bypassqTask
+      Cluster: !ImportValue bypassqApp
+      LaunchType: FARGATE
+      DesiredCount: 2
+      HealthCheckGracePeriodSeconds: 60
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: 100
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          Subnets:
+            - !ImportValue bypassqVpcPrivate01
+            - !ImportValue bypassqVpcPrivate02
+          SecurityGroups:
+            - !ImportValue bypassqServiceSg
+      LoadBalancers:
+        - ContainerName: bypassqTask
+          ContainerPort: 8081
+          TargetGroupArn: !Ref bypassqServiceTg
+  
+  bypassqServiceTg:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      VpcId: !ImportValue bypassqVpc
+      Port: 80
+      Protocol: HTTP
+      Matcher:
+        HttpCode: 200
+      HealthCheckIntervalSeconds: 30
+      HealthCheckPath: /api/health
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 10
+      TargetType: ip
+
+  bypassqServiceListenerRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties: 
+      ListenerArn: !ImportValue LoadBalancerListener
+      Priority: 1
+      Conditions:
+        - Field: path-pattern
+          Values:
+            - /*
+      Actions:
+        - TargetGroupArn: !Ref bypassqServiceTg
+          Type: forward
+
+Outputs:
+  ApiEndpoint:
+    Description: BypassQ API Endpoint
+    Value: !Join ['', ['http://', !ImportValue bypassqAlbDNS, '/api/health']]
+    Export:
+      Name: 'ByPassQApiEndpoint'

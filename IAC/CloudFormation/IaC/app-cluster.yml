@@ -1,0 +1,133 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Container Cluster on ECS and Application Load Balancer and CloudWatch Groups
+
+Resources:
+        
+  bypassqApp:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: 'bypassqApp'
+
+  bypassqAlb:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: 'bypassqAlb'
+      Subnets:
+        - !ImportValue bypassqVpcPublic01
+        - !ImportValue bypassqVpcPublic02
+      SecurityGroups:
+        - !Ref bypassqAlbSg
+
+  LoadBalancerListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref bypassqAlb
+      Protocol: HTTP
+      Port: 80
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref bypassqAlbTg
+
+  bypassqAlbSg:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security Group for application load balancer to services on ECS
+      VpcId: !ImportValue 'bypassqVpc'
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIpv6: ::/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIpv6: ::/0
+
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: -1
+          FromPort: -1
+          ToPort: -1
+          CidrIpv6: ::/0
+
+  bypassqAlbTg:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: bypassqAlbTg
+      VpcId: !ImportValue bypassqVpc
+      Protocol: 'HTTP'
+      Port: 80
+
+  bypassqBackendLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: 'bypassqBackend'
+      RetentionInDays: 3
+
+  bypassqServiceSg:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security Group for service
+      VpcId: !ImportValue 'bypassqVpc'
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          SourceSecurityGroupId: !Ref bypassqAlbSg
+          FromPort: 0
+          ToPort: 65535
+
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
+
+
+
+Outputs:
+
+  bypassqApp:
+    Value: !Ref bypassqApp
+    Export:
+      Name: bypassqApp
+  
+  LoadBalancerListener:
+    Description: listener on port 80
+    Value: !Ref LoadBalancerListener
+    Export:
+      Name: LoadBalancerListener
+
+  bypassqServiceSg:
+    Description: Security Groups for bypassq service
+    Value: !Ref bypassqServiceSg
+    Export:
+      Name: bypassqServiceSg
+  
+  bypassqAlbDNS:
+    Description: Domain name for the loadbalancer
+    Value: !GetAtt bypassqAlb.DNSName
+    Export:
+      Name: bypassqAlbDNS
+
+  bypassqAlbHostedZoneId:
+    Description: Domain name for the loadbalancer
+    Value: !GetAtt bypassqAlb.CanonicalHostedZoneID
+    Export:
+      Name: bypassqAlbHostedZoneId
+  
+  
+  
+  
+
+  
+  
